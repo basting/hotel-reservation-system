@@ -1,9 +1,13 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render } from '@testing-library/react'
+import { App } from './App'
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+describe('App', () => {
+  it('renders the App component', () => {
+    const { getByText } = render(<App />)
+
+    // Check if the Navbar and ReservationSearch components are present
+    expect(getByText('Hotel Reservation System')).toBeInTheDocument()
+    // Ensure that elements from the ReservationSearch component are rendered as well
+    expect(getByText('Date of Arrival')).toBeInTheDocument()
+  })
+})

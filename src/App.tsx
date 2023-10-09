@@ -1,26 +1,13 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import type React from 'react'
+import { Container } from '@mui/material'
+import { Navbar } from './components/shared/Navbar'
+import { ReservationSearch } from './components/reservation/ReservationSearch'
 
-function App() {
+export const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Container>
+      <Navbar />
+      <ReservationSearch />
+    </Container>
+  )
 }
-
-export default App;
