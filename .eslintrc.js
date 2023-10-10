@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ["standard-with-typescript", "plugin:react/recommended", "plugin:react/jsx-runtime"],
+  extends: ["standard-with-typescript", "plugin:react/recommended", "plugin:react/jsx-runtime", "plugin:@typescript-eslint/recommended"],
   overrides: [
     {
       env: {
@@ -16,6 +16,7 @@ module.exports = {
       },
     },
   ],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
@@ -23,4 +24,10 @@ module.exports = {
   },
   plugins: ["react"],
   rules: {},
+  settings: {
+    react: {
+      version: 'detect'
+    }
+  },
+  "ignorePatterns": [".eslintrc.js", "**/*.test.ts", "coverage/**"]
 };

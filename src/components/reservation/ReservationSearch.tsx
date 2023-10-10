@@ -8,7 +8,7 @@ import { ReservationDetail } from './ReservationDetail'
 export const ReservationSearch: React.FC = () => {
   const [currentReservation, setCurrentReservation] = useState<Reservation>(emptyReservation)
 
-  const handleSearch = (searchCriteria: Record<string, any>): void => {
+  const handleSearch = (searchCriteria: Record<string, string>): void => {
     // TODO: Search logic to go here
     console.log('Search criteria: ', searchCriteria)
   }

@@ -15,13 +15,13 @@ const useStyles = makeStyles({
 })
 
 interface SearchCriteriaProps {
-  onSearch: (criteria: Record<string, any>) => void
+  onSearch: (criteria: Record<string, string>) => void
 }
 
 export const ReservationSearchCriteria: React.FC<SearchCriteriaProps> = ({
   onSearch
 }: SearchCriteriaProps) => {
-  const [criteria, setCriteria] = useState<Record<string, any>>({})
+  const [criteria, setCriteria] = useState<Record<string, string>>({})
 
   const handleSearch = (): void => {
     onSearch(criteria)
