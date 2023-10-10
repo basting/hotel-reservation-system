@@ -29,5 +29,12 @@ jobs:
       run: npm run build
 
     - name: Run unit tests
-      run: npm test
+      run: npm test -- --coverage
+      env:
+        CI: true
 
+    - name: Upload Clover Report
+      uses: actions/upload-artifact@v2
+      with:
+        name: clover-report
+        path: coverage/clover.xml
