@@ -1,4 +1,49 @@
-# Getting Started with Create React App
+# Proof-of-Concept for a Hotel Reservation System
+
+ENG will create a search and master/detail page with CRUD features.
+
+## Requirements and current status
+
+- [x] Engineering MUST use Visual Studio Code with React V18 and its React Material for GUI
+    - [x] React V18
+    - [x] React Material for GUI
+
+- [x] It needs to use ts and tsx.
+
+- [ ] Engineering needs to create a search page with search criteria and a result table. (check reservation.json for required data (2 entries))
+    - [x] Create a search page with search criteria
+    - [x] Create a search result table
+    - [ ] Wire up all components and populate with data
+
+- [ ] Engineering needs to create a popup dialog (modal dialog) to display the detail reservation (check GUI.png for UI sketch)
+    - [x] Create a popup modal dialog to display reservation detail
+    - [ ] Update UI components to the needed types
+
+- [ ] Engineering MUST use the Function Component approach and use hook / State / Context to load 2 entries from reservation.json into memory and manage search logic.
+
+- [x] Engineering MUST create relevant component objects to display search criteria, search results, and detail reservations by double-clicking the search result.
+
+- [ ] Engineering MUST enhance add/modify/delete functions to provide CRUD for reservation. Please provide some basic form validation for add/modification.  If you choose 3rd lib, please explain the reason.
+
+- [ ] Engineering MUST use an observable/subscription in the useEffect hook to add a new reservation to the in-memory cache, so the user can query that newly added reservation on the fly.
+
+- [x] Engineering MUST apply the standard React coding style guide throughout the implementation. For example, import order, CamelCase, PascalCase
+
+- [x] Engineering MUST create JEST unit test for each component object. We expect at least 80% code coverage.
+    - [x] Create JEST unit test cases
+    - [ ] Achieve 80% code coverage
+
+- [x] Engineering MUST use ESLint to find and address all Lint-related issues.
+
+- [ ] Engineering MUST use playwright to do an e2e automation test.
+
+- [ ] Engineering MUST use GitHub to store the project and use a GitHub CI/CD pipeline to build, run unit tests, run ESLint, and execute the e2e.
+    - [ ] Use Github CI/CD pipeline
+        - [x] To build
+        - [x] Run unit tests
+        - [x] Run ESLint
+        - [ ] Execute the e2e
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
