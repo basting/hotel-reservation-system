@@ -24,7 +24,9 @@ interface SearchCriteriaProps {
 export const ReservationSearchCriteria: React.FC<SearchCriteriaProps> = ({
   onSearch
 }: SearchCriteriaProps) => {
-  const [criteria, setCriteria] = useState<Record<string, string>>({})
+  const [criteria, setCriteria] = useState<Record<string, string>>({
+    roomType: ''
+  })
 
   const handleSearch = (): void => {
     onSearch(criteria)
@@ -50,9 +52,10 @@ export const ReservationSearchCriteria: React.FC<SearchCriteriaProps> = ({
           </Grid>
           <Grid item xs={3}>
             <FormControl className={classes.fillWidthHorizontal} variant='standard'>
-              <InputLabel>Room Size</InputLabel>
+              <InputLabel id='room-size-input-label'>Room Size</InputLabel>
               <Select
-                  label=''
+                  aria-labelledby='room-size-input-label'
+                  value={criteria.roomType}
                   onChange={(e) => { setCriteria({ ...criteria, roomType: e.target.value as RoomSize }) }}
                 >
                   {Object.values(RoomSize).map((roomSize) => (

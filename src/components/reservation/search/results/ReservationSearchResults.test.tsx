@@ -69,7 +69,7 @@ describe('ReservationSearchResults', () => {
     expect(getByText('Thu, Nov 18, 2021 12:00 am')).toBeInTheDocument()
     expect(getByText('Thu, Nov 25, 2021 12:00 am')).toBeInTheDocument()
     expect(getByText('7')).toBeInTheDocument()
-    expect(getByText('business-suite x 3')).toBeInTheDocument()
+    expect(getByText('Business Suite x 3')).toBeInTheDocument()
   })
 
   it('calls the onReservationClick callback when a row is clicked', () => {
