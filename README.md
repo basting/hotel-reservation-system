@@ -15,9 +15,9 @@ ENG will create a search and master/detail page with CRUD features.
     - [x] Create a search result table
     - [ ] Wire up all components and populate with data
 
-- [ ] Engineering needs to create a popup dialog (modal dialog) to display the detail reservation (check GUI.png for UI sketch)
+- [x] Engineering needs to create a popup dialog (modal dialog) to display the detail reservation (check GUI.png for UI sketch)
     - [x] Create a popup modal dialog to display reservation detail
-    - [ ] Update UI components to the needed types
+    - [x] Update UI components to the needed types
 
 - [ ] Engineering MUST use the Function Component approach and use hook / State / Context to load 2 entries from reservation.json into memory and manage search logic.
 
