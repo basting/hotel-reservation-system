@@ -1,9 +1,9 @@
 import { Box, Container, Dialog, DialogTitle, Grid } from '@mui/material'
-import type Reservation from '../../types/Reservation'
-import { ReservationSearchCriteria } from './ReservationSearchCriteria'
-import { ReservationSearchResults } from './ReservationSearchResults'
+import type Reservation from '../../../types/Reservation'
+import { ReservationSearchCriteria } from './criteria/ReservationSearchCriteria'
+import { ReservationSearchResults } from './results/ReservationSearchResults'
 import { useState } from 'react'
-import { ReservationDetail } from './ReservationDetail'
+import { ReservationDetail } from '../detail/ReservationDetail'
 
 export const ReservationSearch: React.FC = () => {
   const [currentReservation, setCurrentReservation] = useState<Reservation>(emptyReservation)
@@ -196,11 +196,15 @@ const sampleReservations: Reservation[] = [
       'extraBreakfast',
       'extraWiFi'
     ],
-    payment: 'db',
+    payment: 'bc',
     note: 'idm lab test',
     tags: [
       'hotel',
-      'booking'
+      'booking',
+      'react',
+      'angular',
+      'material',
+      'labtest'
     ],
     reminder: true,
     newsletter: false,
