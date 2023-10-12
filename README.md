@@ -10,22 +10,24 @@ ENG will create a search and master/detail page with CRUD features.
 
 - [x] It needs to use ts and tsx.
 
-- [ ] Engineering needs to create a search page with search criteria and a result table. (check reservation.json for required data (2 entries))
+- [x] Engineering needs to create a search page with search criteria and a result table. (check reservation.json for required data (2 entries))
     - [x] Create a search page with search criteria
     - [x] Create a search result table
-    - [ ] Wire up all components and populate with data
+    - [x] Wire up all components and populate with data
 
 - [x] Engineering needs to create a popup dialog (modal dialog) to display the detail reservation (check GUI.png for UI sketch)
     - [x] Create a popup modal dialog to display reservation detail
     - [x] Update UI components to the needed types
 
-- [ ] Engineering MUST use the Function Component approach and use hook / State / Context to load 2 entries from reservation.json into memory and manage search logic.
+- [x] Engineering MUST use the Function Component approach and use hook / State / Context to load 2 entries from reservation.json into memory and manage search logic.
 
 - [x] Engineering MUST create relevant component objects to display search criteria, search results, and detail reservations by double-clicking the search result.
 
 - [ ] Engineering MUST enhance add/modify/delete functions to provide CRUD for reservation. Please provide some basic form validation for add/modification.  If you choose 3rd lib, please explain the reason.
+    - [x] Provide all CRUD functions
+    - [ ] Add basic form validation
 
-- [ ] Engineering MUST use an observable/subscription in the useEffect hook to add a new reservation to the in-memory cache, so the user can query that newly added reservation on the fly.
+- [x] Engineering MUST use an observable/subscription in the useEffect hook to add a new reservation to the in-memory cache, so the user can query that newly added reservation on the fly.
 
 - [x] Engineering MUST apply the standard React coding style guide throughout the implementation. For example, import order, CamelCase, PascalCase
 

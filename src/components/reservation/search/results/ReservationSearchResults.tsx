@@ -33,8 +33,8 @@ export const ReservationSearchResults: React.FC<SearchResultsProps> = ({
         <TableHead>
           <TableRow>
             <StyledTableCell>Guest Name</StyledTableCell>
-            <StyledTableCell>Check-in Date</StyledTableCell>
-            <StyledTableCell>Check-out Date</StyledTableCell>
+            <StyledTableCell>Date of Arrival</StyledTableCell>
+            <StyledTableCell>Date of Departure</StyledTableCell>
             <StyledTableCell>Days</StyledTableCell>
             <StyledTableCell>Room Type and Quantity</StyledTableCell>
           </TableRow>

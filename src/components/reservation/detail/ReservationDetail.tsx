@@ -1,6 +1,6 @@
 import { Box, Button, Checkbox, Chip, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, Switch, TextField } from '@mui/material'
 import type Reservation from '../../../types/Reservation'
-import dayjs from 'dayjs'
+import dayjs, { type Dayjs } from 'dayjs'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { RoomSize, RoomSizeDisplay } from '../../shared/constants/RoomSize'
@@ -8,6 +8,7 @@ import { makeStyles } from '@mui/styles'
 import { Extras, ExtrasDisplay, getExtrasFromString } from '../../shared/constants/Extras'
 import { Tag, TagDisplay, getTagFromString } from '../../shared/constants/Tag'
 import { PaymentMethod, PaymentMethodDisplay } from '../../shared/constants/PaymentMethod'
+import { useState } from 'react'
 
 const useStyles = makeStyles({
   fillWidthHorizontal: {
@@ -21,13 +22,84 @@ const useStyles = makeStyles({
 interface ReservationDetailProps {
   reservation: Reservation
   handleClose: () => void
+  onUpdateReservation: (updatedReservation: Reservation) => void
+  onDeleteReservation: (id: number) => void
 }
 
-export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservation, handleClose }: ReservationDetailProps) => {
+export const ReservationDetail: React.FC<ReservationDetailProps> = ({
+  reservation,
+  handleClose,
+  onUpdateReservation,
+  onDeleteReservation
+}: ReservationDetailProps) => {
+  const [updatedReservation, setUpdatedReservation] = useState(reservation)
   const classes = useStyles()
 
   const maxAllowedFirstNameSize = 25
   const maxAllowedLastNameSize = 50
+
+  const handleTopLevelFieldChange = (fieldName: string, value: string | boolean | string[]): void => {
+    // Update the local state for the changed field in updatedReservation
+    setUpdatedReservation({
+      ...updatedReservation,
+      [fieldName]: value
+    })
+  }
+
+  const handleStayFieldChange = (fieldName: string, value: Dayjs | null): void => {
+    // Update the local state for the changed field in updatedReservation
+    setUpdatedReservation({
+      ...updatedReservation,
+      stay: {
+        ...updatedReservation.stay,
+        [fieldName]: value?.toISOString()
+      }
+    })
+  }
+
+  const handleRoomFieldChange = (fieldName: string, value: string | number): void => {
+    // Update the local state for the changed field in updatedReservation
+    setUpdatedReservation({
+      ...updatedReservation,
+      room: {
+        ...updatedReservation.room,
+        [fieldName]: value
+      }
+    })
+  }
+
+  const handleAddressStreetFieldChange = (fieldName: string, value: string): void => {
+    // Update the local state for the changed field in updatedReservation
+    setUpdatedReservation({
+      ...updatedReservation,
+      addressStreet: {
+        ...updatedReservation.addressStreet,
+        [fieldName]: value
+      }
+    })
+  }
+
+  const handleAddressLocationFieldChange = (fieldName: string, value: string): void => {
+    // Update the local state for the changed field in updatedReservation
+    setUpdatedReservation({
+      ...updatedReservation,
+      addressLocation: {
+        ...updatedReservation.addressLocation,
+        [fieldName]: value
+      }
+    })
+  }
+
+  const handleSave = (): void => {
+    // Update the reservation in the parent component
+    onUpdateReservation(updatedReservation)
+    handleClose() // Close the dialog
+  }
+
+  const handleDelete = (): void => {
+    onDeleteReservation(updatedReservation.id)
+    handleClose() // Close the dialog
+  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -36,16 +108,18 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
           <Grid container spacing={5}>
             <Grid item xs={6}>
               <DatePicker
-                slotProps={{ textField: { variant: 'standard' } }}
+                slotProps={{ textField: { variant: 'standard' }, actionBar: { actions: ['today'] }, field: { clearable: true } }}
                 label="Date of Arrival"
                 value={dayjs(reservation.stay.arrivalDate)}
+                onChange={(event) => { handleStayFieldChange('arrivalDate', event) }}
               />
             </Grid>
             <Grid item xs={6}>
               <DatePicker
-                slotProps={{ textField: { variant: 'standard' } }}
+                slotProps={{ textField: { variant: 'standard' }, actionBar: { actions: ['today'] }, field: { clearable: true } }}
                 label="Date of Departure"
                 value={dayjs(reservation.stay.departureDate)}
+                onChange={(event) => { handleStayFieldChange('departureDate', event) }}
               />
             </Grid>
           </Grid>
@@ -56,9 +130,10 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
               <FormControl variant='standard' className={classes.fillWidthHorizontal}>
                 <InputLabel>Room Size</InputLabel>
                 <Select
-                    value={reservation.room.roomSize}
-                    aria-describedby="room-size-helper-text"
-                  >
+                  aria-describedby="room-size-helper-text"
+                  defaultValue={reservation.room.roomSize}
+                  onChange={(event) => { handleRoomFieldChange('roomSize', event.target.value) }}
+                >
                     {Object.values(RoomSize).map((roomSize) => (
                       <MenuItem key={roomSize} value={roomSize}>
                         {RoomSizeDisplay[roomSize]}
@@ -73,9 +148,10 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
             <Grid item xs={6}>
               <TextField variant='standard'
                 label="Room Quantity"
-                value={reservation.room.roomQuantity}
-                helperText='Maximum: 5'
+                defaultValue={updatedReservation.room.roomQuantity}
+                onChange={(event) => { handleRoomFieldChange('roomQuantity', parseInt(event.target.value)) }}
               />
+              <FormHelperText>Maximum: 5</FormHelperText>
             </Grid>
           </Grid>
         </Box>
@@ -84,7 +160,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
             <Grid item xs={12}>
               <TextField variant='standard'
                 label="First Name"
-                value={reservation.firstName}
+                defaultValue={updatedReservation.firstName}
+                onChange={(event) => { handleTopLevelFieldChange('firstName', event.target.value) }}
               />
               <FormHelperText>
                 {`${reservation.firstName.length} / ${maxAllowedFirstNameSize}`}
@@ -97,7 +174,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
             <Grid item xs={12}>
               <TextField variant='standard'
                 label="Last Name"
-                value={reservation.lastName}
+                defaultValue={updatedReservation.lastName}
+                onChange={(event) => { handleTopLevelFieldChange('lastName', event.target.value) }}
               />
               <FormHelperText>
                 {`${reservation.lastName.length} / ${maxAllowedLastNameSize}`}
@@ -110,7 +188,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
             <Grid item xs={12}>
               <TextField variant='standard'
                 label="Email"
-                value={reservation.email}
+                defaultValue={updatedReservation.email}
+                onChange={(event) => { handleTopLevelFieldChange('email', event.target.value) }}
               />
             </Grid>
           </Grid>
@@ -120,7 +199,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
             <Grid item xs={12}>
               <TextField variant='standard'
                 label="Phone Number"
-                value={reservation.phone}
+                defaultValue={updatedReservation.phone}
+                onChange={(event) => { handleTopLevelFieldChange('phone', event.target.value) }}
                 helperText="Add your country code first"
               />
             </Grid>
@@ -131,13 +211,15 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
             <Grid item xs={6}>
               <TextField variant='standard'
                 label="Street Name"
-                value={reservation.addressStreet.streetName}
+                defaultValue={updatedReservation.addressStreet.streetName}
+                onChange={(event) => { handleAddressStreetFieldChange('streetName', event.target.value) }}
               />
             </Grid>
             <Grid item xs={6}>
               <TextField variant='standard'
                 label="Street Number"
-                value={reservation.addressStreet.streetNumber}
+                defaultValue={updatedReservation.addressStreet.streetNumber}
+                onChange={(event) => { handleAddressStreetFieldChange('streetNumber', event.target.value) }}
               />
             </Grid>
           </Grid>
@@ -147,19 +229,22 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
             <Grid item xs={4}>
               <TextField variant='standard'
                 label="ZIP"
-                value={reservation.addressLocation.zipCode}
+                defaultValue={updatedReservation.addressLocation.zipCode}
+                onChange={(event) => { handleAddressLocationFieldChange('zipCode', event.target.value) }}
               />
             </Grid>
             <Grid item xs={4}>
               <TextField variant='standard'
                 label="State"
-                value={reservation.addressLocation.state}
+                defaultValue={updatedReservation.addressLocation.state}
+                onChange={(event) => { handleAddressLocationFieldChange('state', event.target.value) }}
               />
             </Grid>
             <Grid item xs={4}>
               <TextField variant='standard'
                 label="City"
-                value={reservation.addressLocation.city}
+                defaultValue={updatedReservation.addressLocation.city}
+                onChange={(event) => { handleAddressLocationFieldChange('city', event.target.value) }}
               />
             </Grid>
           </Grid>
@@ -171,8 +256,9 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
                 <InputLabel>Extras</InputLabel>
                 <Select
                     multiple
-                    value={reservation.extras}
                     renderValue={(selected) => selected.map(s => ExtrasDisplay[getExtrasFromString(s)]).join(', ')}
+                    defaultValue={reservation.extras}
+                    onChange={(event) => { handleTopLevelFieldChange('extras', event.target.value) }}
                   >
                     {Object.values(Extras).map((extras) => (
                       <MenuItem key={extras} value={extras}>
@@ -191,7 +277,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
                 <RadioGroup
                   row
                   name="row-radio-buttons-group"
-                  value={reservation.payment}
+                  value={updatedReservation.payment}
+                  onChange={(event) => { handleTopLevelFieldChange('payment', event.target.value) }}
                 >
                   {Object.values(PaymentMethod).map((pm) => (
                     <FormControlLabel
@@ -203,7 +290,6 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
                   ))}
                 </RadioGroup>
               </FormControl>
-
             </Grid>
           </Grid>
         </Box>
@@ -212,7 +298,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
             <Grid item xs={12}>
               <TextField variant='standard'
                 label="Personal Note"
-                value={reservation.note}
+                defaultValue={updatedReservation.note}
+                onChange={(event) => { handleTopLevelFieldChange('note', event.target.value) }}
               />
             </Grid>
           </Grid>
@@ -224,7 +311,6 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
                 <InputLabel>Tags</InputLabel>
                 <Select
                     multiple
-                    value={reservation.tags}
                     renderValue={(selected) => (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                         {selected.map((value) => (
@@ -232,6 +318,8 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
                         ))}
                       </Box>
                     )}
+                    defaultValue={reservation.tags}
+                    onChange={(event) => { handleTopLevelFieldChange('tags', event.target.value) }}
                   >
                     {Object.values(Tag).map((tag) => (
                       <MenuItem key={tag} value={tag}>
@@ -246,27 +334,70 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({ reservatio
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2} marginTop={2}>
             <Grid item xs={12}>
-              <FormControlLabel control={<Switch />} label="Send me a reminder" checked={reservation.reminder}/>
+              <FormControlLabel control={
+                <Switch
+                  onChange={(event) => { handleTopLevelFieldChange('reminder', event.target.checked) }}
+                  checked={updatedReservation.reminder}
+                />
+              } label="Send me a reminder"
+                defaultChecked={updatedReservation.reminder}
+              />
             </Grid>
           </Grid>
         </Box>
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <FormControlLabel control={<Switch />} label="Subscribe to newsletter" checked={reservation.newsletter}/>
+              <FormControlLabel control={
+                <Switch
+                  onChange={(event) => { handleTopLevelFieldChange('newsletter', event.target.checked) }}
+                  checked={updatedReservation.newsletter}
+                />
+              }
+                label="Subscribe to newsletter"
+                defaultChecked={updatedReservation.newsletter}
+              />
             </Grid>
           </Grid>
         </Box>
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <FormControlLabel control={<Checkbox />} label="I confirm the information given above" checked={reservation.confirm}/>
+              <FormControlLabel control={
+                <Checkbox
+                  onChange={(event) => { handleTopLevelFieldChange('confirm', event.target.checked) }}
+                  checked={updatedReservation.confirm}
+                />
+              }
+                label="I confirm the information given above"
+                defaultChecked={updatedReservation.confirm}/>
             </Grid>
           </Grid>
         </Box>
-        <Button variant="contained" onClick={handleClose}>
-            Close
-        </Button>
+        <Box sx={{ my: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={2}>
+              <Button variant="contained" onClick={handleSave}>
+                  Save
+              </Button>
+            </Grid>
+            <Grid item xs={2}>
+              <Button variant="contained" onClick={handleClose}>
+                  Close
+              </Button>
+            </Grid>
+              {(updatedReservation.id !== null &&
+                updatedReservation.id !== undefined &&
+                updatedReservation.id !== 0) &&
+                (
+                <Grid item xs={2}>
+                  <Button variant="contained" onClick={handleDelete}>
+                    Delete
+                  </Button>
+                </Grid>
+                )}
+          </Grid>
+        </Box>
       </Paper>
       </LocalizationProvider>
   )
