@@ -2,27 +2,67 @@ import { Box, Container, Dialog, DialogTitle, Grid } from '@mui/material'
 import type Reservation from '../../../types/Reservation'
 import { ReservationSearchCriteria } from './criteria/ReservationSearchCriteria'
 import { ReservationSearchResults } from './results/ReservationSearchResults'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { useState } from 'react'
 import { ReservationDetail } from '../detail/ReservationDetail'
+import { reservationFilterState, reservationState } from '../../../recoil/recoil'
+import { filteredReservations } from '../../../recoil/selectors/filteredReservations'
+import dayjs from 'dayjs'
 
 export const ReservationSearch: React.FC = () => {
   const [currentReservation, setCurrentReservation] = useState<Reservation>(emptyReservation)
+  const [open, setOpen] = useState(false)
+  const [createMode, setCreateMode] = useState(false)
+  const reservations = useRecoilValue(filteredReservations)
+  const allReservations = useRecoilValue(reservationState)
+  const setReservations = useSetRecoilState(reservationState)
+  const setReservationFilter = useSetRecoilState(reservationFilterState)
 
   const handleSearch = (searchCriteria: Record<string, string>): void => {
-    // TODO: Search logic to go here
-    console.log('Search criteria: ', searchCriteria)
+    setReservationFilter(searchCriteria)
+  }
+
+  const handleCreate = (): void => {
+    setCreateMode(true)
+    setCurrentReservation({
+      ...emptyReservation,
+      stay: {
+        arrivalDate: dayjs().toISOString(),
+        departureDate: dayjs().toISOString()
+      }
+    })
+    handleClickOpen()
   }
 
   const handleReservationClick = (id: number): void => {
-    console.log('Selected Reservation: ', id)
-    const reservation = sampleReservations.find((r) => r.id === id)
+    const reservation = reservations.find((r) => r.id === id)
     if (reservation !== null && reservation !== undefined) {
+      setCreateMode(false)
       setCurrentReservation(reservation)
       handleClickOpen()
     }
   }
 
-  const [open, setOpen] = useState(false)
+  const handleUpdateReservation = (updatedReservation: Reservation): void => {
+    const id = updatedReservation.id
+    const updatedReservations = [...reservations]
+    if (id === null || id === undefined || id === 0) {
+      const maxId: number = allReservations.reduce((max, item) => (item.id > max ? item.id : max), 0)
+      updatedReservation = { ...updatedReservation, id: maxId + 1 }
+      updatedReservations.push(updatedReservation)
+    } else {
+      const index = reservations.findIndex((r) => r.id === updatedReservation.id)
+      if (index !== -1) {
+        updatedReservations[index] = updatedReservation
+      }
+    }
+    setReservations(updatedReservations)
+  }
+
+  const handleDeleteReservation = (id: number): void => {
+    const reservationsAfterDelete = allReservations.filter(item => item.id !== id)
+    setReservations(reservationsAfterDelete)
+  }
 
   const handleClickOpen = (): void => {
     setOpen(true)
@@ -37,19 +77,30 @@ export const ReservationSearch: React.FC = () => {
       <Box sx={{ p: 5 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <ReservationSearchCriteria onSearch={handleSearch} />
+            <ReservationSearchCriteria onSearch={handleSearch} onCreate={handleCreate}/>
           </Grid>
           <Grid item xs={12}>
             <ReservationSearchResults
-              results={sampleReservations}
+              results={reservations}
               onReservationClick={handleReservationClick}
             />
           </Grid>
         </Grid>
       </Box>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>View Reservation</DialogTitle>
-        <ReservationDetail reservation={currentReservation} handleClose={handleClose} />
+        {createMode
+          ? (
+          <DialogTitle>Create Reservation</DialogTitle>
+            )
+          : (
+          <DialogTitle>View and Edit Reservation</DialogTitle>
+            )}
+        <ReservationDetail
+          reservation={currentReservation}
+          handleClose={handleClose}
+          onUpdateReservation={handleUpdateReservation}
+          onDeleteReservation={handleDeleteReservation}
+        />
       </Dialog>
     </Container>
   )
@@ -88,126 +139,3 @@ const emptyReservation: Reservation = {
   newsletter: false,
   confirm: false
 }
-
-const sampleReservations: Reservation[] = [
-  {
-    id: 1,
-    stay: {
-      arrivalDate: '2021-11-18T05:00:00.000Z',
-      departureDate: '2021-11-25T05:00:00.000Z'
-    },
-    room: {
-      roomSize: 'business-suite',
-      roomQuantity: 3
-    },
-    firstName: 'IDM',
-    lastName: 'ENG',
-    email: 'idm.test@idm.com',
-    phone: '9999999999',
-    addressStreet: {
-      streetName: 'IDM Street',
-      streetNumber: '1234'
-    },
-    addressLocation: {
-      zipCode: '123456',
-      state: 'Arizona',
-      city: 'OAKVILLE'
-    },
-    extras: [
-      'extraBreakfast',
-      'extraTV',
-      'extraWiFi',
-      'extraParking',
-      'extraBalcony'
-    ],
-    payment: 'cc',
-    note: 'idm lab test',
-    tags: [
-      'hotel',
-      'booking',
-      'labtest'
-    ],
-    reminder: true,
-    newsletter: true,
-    confirm: false
-  },
-  {
-    id: 2,
-    stay: {
-      arrivalDate: '2021-11-01T04:00:00.000Z',
-      departureDate: '2021-11-04T04:00:00.000Z'
-    },
-    room: {
-      roomSize: 'presidential-suite',
-      roomQuantity: 2
-    },
-    firstName: 'IDM',
-    lastName: 'PM',
-    email: 'idm.op@idm.com',
-    phone: '123456789',
-    addressStreet: {
-      streetName: 'IDM',
-      streetNumber: '1234'
-    },
-    addressLocation: {
-      zipCode: '123456',
-      state: 'Arkansas',
-      city: 'OAK'
-    },
-    extras: [
-      'extraParking',
-      'extraBalcony'
-    ],
-    payment: 'cash',
-    note: 'lab test',
-    tags: [
-      'angular',
-      'material',
-      'labtest'
-    ],
-    reminder: true,
-    newsletter: false,
-    confirm: true
-  },
-  {
-    id: 3,
-    stay: {
-      arrivalDate: '2021-10-18T04:00:00.000Z',
-      departureDate: '2021-10-22T04:00:00.000Z'
-    },
-    room: {
-      roomSize: 'family-suite',
-      roomQuantity: 5
-    },
-    firstName: 'IDM',
-    lastName: 'OPS',
-    email: 'idm.ops@idm.com',
-    phone: '9999999988',
-    addressStreet: {
-      streetName: 'IDM Street',
-      streetNumber: '123487'
-    },
-    addressLocation: {
-      zipCode: '12345689',
-      state: 'Arizona',
-      city: 'OAKVILLE'
-    },
-    extras: [
-      'extraBreakfast',
-      'extraWiFi'
-    ],
-    payment: 'bc',
-    note: 'idm lab test',
-    tags: [
-      'hotel',
-      'booking',
-      'react',
-      'angular',
-      'material',
-      'labtest'
-    ],
-    reminder: true,
-    newsletter: false,
-    confirm: false
-  }
-]

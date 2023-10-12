@@ -53,8 +53,8 @@ describe('ReservationSearchResults', () => {
 
     // Check if the table headers are present
     expect(getByText('Guest Name')).toBeInTheDocument()
-    expect(getByText('Check-in Date')).toBeInTheDocument()
-    expect(getByText('Check-out Date')).toBeInTheDocument()
+    expect(getByText('Date of Arrival')).toBeInTheDocument()
+    expect(getByText('Date of Departure')).toBeInTheDocument()
     expect(getByText('Days')).toBeInTheDocument()
     expect(getByText('Room Type and Quantity')).toBeInTheDocument()
   })
@@ -66,8 +66,8 @@ describe('ReservationSearchResults', () => {
 
     // Check if reservation data is present
     expect(getByText('IDM ENG')).toBeInTheDocument()
-    expect(getByText('Thu, Nov 18, 2021 12:00 am')).toBeInTheDocument()
-    expect(getByText('Thu, Nov 25, 2021 12:00 am')).toBeInTheDocument()
+    expect(getByText('Thu, Nov 18, 2021')).toBeInTheDocument()
+    expect(getByText('Thu, Nov 25, 2021')).toBeInTheDocument()
     expect(getByText('7')).toBeInTheDocument()
     expect(getByText('Business Suite x 3')).toBeInTheDocument()
   })
