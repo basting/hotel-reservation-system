@@ -4,20 +4,10 @@ import dayjs, { type Dayjs } from 'dayjs'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { RoomSize, RoomSizeDisplay } from '../../shared/constants/RoomSize'
-import { makeStyles } from '@mui/styles'
 import { Extras, ExtrasDisplay, getExtrasFromString } from '../../shared/constants/Extras'
 import { Tag, TagDisplay, getTagFromString } from '../../shared/constants/Tag'
 import { PaymentMethod, PaymentMethodDisplay } from '../../shared/constants/PaymentMethod'
 import { useState } from 'react'
-
-const useStyles = makeStyles({
-  fillWidthHorizontal: {
-    width: '100%'
-  },
-  rightAlignedText: {
-    textAlign: 'right'
-  }
-})
 
 interface ReservationDetailProps {
   reservation: Reservation
@@ -33,7 +23,6 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   onDeleteReservation
 }: ReservationDetailProps) => {
   const [updatedReservation, setUpdatedReservation] = useState(reservation)
-  const classes = useStyles()
 
   const maxAllowedFirstNameSize = 25
   const maxAllowedLastNameSize = 50
@@ -110,7 +99,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               <DatePicker
                 slotProps={{ textField: { variant: 'standard' }, actionBar: { actions: ['today'] }, field: { clearable: true } }}
                 label="Date of Arrival"
-                value={dayjs(reservation.stay.arrivalDate)}
+                value={dayjs(updatedReservation.stay.arrivalDate)}
                 onChange={(event) => { handleStayFieldChange('arrivalDate', event) }}
               />
             </Grid>
@@ -118,7 +107,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               <DatePicker
                 slotProps={{ textField: { variant: 'standard' }, actionBar: { actions: ['today'] }, field: { clearable: true } }}
                 label="Date of Departure"
-                value={dayjs(reservation.stay.departureDate)}
+                value={dayjs(updatedReservation.stay.departureDate)}
                 onChange={(event) => { handleStayFieldChange('departureDate', event) }}
               />
             </Grid>
@@ -127,11 +116,11 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2} marginTop={2}>
             <Grid item xs={6}>
-              <FormControl variant='standard' className={classes.fillWidthHorizontal}>
+              <FormControl variant='standard' style={{ width: '100%' }}>
                 <InputLabel>Room Size</InputLabel>
                 <Select
                   aria-describedby="room-size-helper-text"
-                  defaultValue={reservation.room.roomSize}
+                  defaultValue={updatedReservation.room.roomSize}
                   onChange={(event) => { handleRoomFieldChange('roomSize', event.target.value) }}
                 >
                     {Object.values(RoomSize).map((roomSize) => (
@@ -162,10 +151,9 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 label="First Name"
                 defaultValue={updatedReservation.firstName}
                 onChange={(event) => { handleTopLevelFieldChange('firstName', event.target.value) }}
+                FormHelperTextProps={{ style: { textAlign: 'right' } }}
+                helperText={`${updatedReservation.firstName.length} / ${maxAllowedFirstNameSize}`}
               />
-              <FormHelperText>
-                {`${reservation.firstName.length} / ${maxAllowedFirstNameSize}`}
-              </FormHelperText>
             </Grid>
           </Grid>
         </Box>
@@ -176,10 +164,9 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 label="Last Name"
                 defaultValue={updatedReservation.lastName}
                 onChange={(event) => { handleTopLevelFieldChange('lastName', event.target.value) }}
+                FormHelperTextProps={{ style: { textAlign: 'right' } }}
+                helperText={`${updatedReservation.lastName.length} / ${maxAllowedLastNameSize}`}
               />
-              <FormHelperText>
-                {`${reservation.lastName.length} / ${maxAllowedLastNameSize}`}
-              </FormHelperText>
             </Grid>
           </Grid>
         </Box>
@@ -252,12 +239,12 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2} marginTop={2}>
             <Grid item xs={12}>
-              <FormControl variant='standard' className={classes.fillWidthHorizontal}>
+              <FormControl variant='standard' style={{ width: '100%' }}>
                 <InputLabel>Extras</InputLabel>
                 <Select
                     multiple
                     renderValue={(selected) => selected.map(s => ExtrasDisplay[getExtrasFromString(s)]).join(', ')}
-                    defaultValue={reservation.extras}
+                    defaultValue={updatedReservation.extras}
                     onChange={(event) => { handleTopLevelFieldChange('extras', event.target.value) }}
                   >
                     {Object.values(Extras).map((extras) => (
@@ -307,7 +294,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2} marginTop={2}>
             <Grid item xs={12}>
-              <FormControl variant='standard' className={classes.fillWidthHorizontal}>
+              <FormControl variant='standard' style={{ width: '100%' }}>
                 <InputLabel>Tags</InputLabel>
                 <Select
                     multiple
@@ -318,7 +305,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                         ))}
                       </Box>
                     )}
-                    defaultValue={reservation.tags}
+                    defaultValue={updatedReservation.tags}
                     onChange={(event) => { handleTopLevelFieldChange('tags', event.target.value) }}
                   >
                     {Object.values(Tag).map((tag) => (

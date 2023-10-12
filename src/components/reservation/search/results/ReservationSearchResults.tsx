@@ -4,23 +4,19 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { DATE_TIME_FORMAT, TIMEZONE } from '../../../shared/constants/TimeConstants'
-import { withStyles } from '@mui/styles'
 import './ReservationSearchResults.css'
 import { RoomSizeDisplay, getRoomSizeFromString } from '../../../shared/constants/RoomSize'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
-const StyledTableCell = withStyles(() => ({
-  head: {
-    backgroundColor: '#e0e0e0',
-    fontWeight: 'bold'
-  }
-}))(TableCell)
-
 interface SearchResultsProps {
   results: Reservation[]
   onReservationClick: (id: number) => void
+}
+
+const headerCellStyle = {
+  fontWeight: 'bold'
 }
 
 export const ReservationSearchResults: React.FC<SearchResultsProps> = ({
@@ -30,13 +26,13 @@ export const ReservationSearchResults: React.FC<SearchResultsProps> = ({
   return (
   <TableContainer component={Paper}>
       <Table>
-        <TableHead>
+        <TableHead style={{ backgroundColor: '#e0e0e0' }}>
           <TableRow>
-            <StyledTableCell>Guest Name</StyledTableCell>
-            <StyledTableCell>Date of Arrival</StyledTableCell>
-            <StyledTableCell>Date of Departure</StyledTableCell>
-            <StyledTableCell>Days</StyledTableCell>
-            <StyledTableCell>Room Type and Quantity</StyledTableCell>
+            <TableCell style={headerCellStyle}>Guest Name</TableCell>
+            <TableCell style={headerCellStyle}>Date of Arrival</TableCell>
+            <TableCell style={headerCellStyle}>Date of Departure</TableCell>
+            <TableCell style={headerCellStyle}>Days</TableCell>
+            <TableCell style={headerCellStyle}>Room Type and Quantity</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

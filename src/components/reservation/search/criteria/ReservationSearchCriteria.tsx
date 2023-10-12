@@ -1,24 +1,12 @@
 import { useState } from 'react'
 import { Button, FormControl, Grid, IconButton, InputAdornment, InputLabel, MenuItem, Select } from '@mui/material'
-import { makeStyles } from '@mui/styles'
 import { RoomSize, RoomSizeDisplay } from '../../../shared/constants/RoomSize'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { START_OF_EPOCH } from '../../../shared/constants/TimeConstants'
 import dayjs from 'dayjs'
 import { CloseRounded } from '@mui/icons-material'
-
-const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: '10px'
-  },
-  fillWidthHorizontal: {
-    width: '100%'
-  }
-})
+import './ReservationSearchCriteria.css'
 
 interface SearchCriteriaProps {
   onSearch: (criteria: Record<string, string>) => void
@@ -41,11 +29,9 @@ export const ReservationSearchCriteria: React.FC<SearchCriteriaProps> = ({
     onCreate()
   }
 
-  const classes = useStyles()
-
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div className={classes.root}>
+      <div className='root'>
         <Grid container spacing={3} alignItems='center'>
           <Grid item xs={2.25}>
           <DatePicker
@@ -70,7 +56,7 @@ export const ReservationSearchCriteria: React.FC<SearchCriteriaProps> = ({
           />
           </Grid>
           <Grid item xs={2.25}>
-            <FormControl className={classes.fillWidthHorizontal} variant='standard'>
+            <FormControl style={{ width: '100%' }} variant='standard'>
               <InputLabel id='room-size-input-label'>Room Size</InputLabel>
               <Select
                   aria-labelledby='room-size-input-label'
@@ -95,12 +81,12 @@ export const ReservationSearchCriteria: React.FC<SearchCriteriaProps> = ({
             </FormControl>
           </Grid>
           <Grid item xs={2.25}>
-            <Button variant="contained" color="primary" onClick={handleSearch} className={classes.fillWidthHorizontal}>
+            <Button variant="contained" color="primary" onClick={handleSearch} style={{ width: '100%' }}>
               Search
             </Button>
           </Grid>
           <Grid item xs={2.25}>
-            <Button variant="contained" color="primary" onClick={handleCreate} className={classes.fillWidthHorizontal}>
+            <Button variant="contained" color="primary" onClick={handleCreate} style={{ width: '100%' }}>
               Create
             </Button>
           </Grid>
