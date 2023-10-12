@@ -29,5 +29,5 @@ module.exports = {
       version: 'detect'
     }
   },
-  "ignorePatterns": [".eslintrc.js", "**/*.test.ts", "coverage/**"]
+  "ignorePatterns": [".eslintrc.js", "playwright.config.ts", "**/*.test.ts", "coverage/**"]
 };
