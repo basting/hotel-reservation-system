@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Chip, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, Switch, TextField } from '@mui/material'
+import { Box, Button, Checkbox, Chip, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, List, ListItem, ListItemIcon, ListItemText, MenuItem, Paper, Radio, RadioGroup, Select, Stack, Switch, TextField } from '@mui/material'
 import type Reservation from '../../../types/Reservation'
 import dayjs, { type Dayjs } from 'dayjs'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -8,6 +8,7 @@ import { Extras, ExtrasDisplay, getExtrasFromString } from '../../shared/constan
 import { Tag, TagDisplay, getTagFromString } from '../../shared/constants/Tag'
 import { PaymentMethod, PaymentMethodDisplay } from '../../shared/constants/PaymentMethod'
 import { useState } from 'react'
+import { LabelImportant } from '@mui/icons-material'
 
 interface ReservationDetailProps {
   reservation: Reservation
@@ -23,6 +24,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   onDeleteReservation
 }: ReservationDetailProps) => {
   const [updatedReservation, setUpdatedReservation] = useState(reservation)
+  const [errorMessages, setErrorMessages] = useState<string[]>([])
 
   const maxAllowedFirstNameSize = 25
   const maxAllowedLastNameSize = 50
@@ -79,10 +81,52 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
     })
   }
 
+  const isEmpty = (val: string): boolean => {
+    return val === null || val === undefined || val === ''
+  }
+
+  const validateFields = (): boolean => {
+    const validationErrors: string[] = []
+
+    if (!dayjs(updatedReservation.stay.arrivalDate).isBefore(dayjs(updatedReservation.stay.departureDate))) {
+      validationErrors.push('Departure Date should be after Arrival Date')
+    }
+
+    if (isEmpty(updatedReservation.room.roomSize)) {
+      validationErrors.push('Room Size cannot be empty')
+    }
+
+    if (updatedReservation.room.roomQuantity < 1 || updatedReservation.room.roomQuantity > 5) {
+      validationErrors.push('Room Quantity should be between 1 and 5')
+    }
+
+    if (isEmpty(updatedReservation.firstName)) {
+      validationErrors.push('First Name cannot be empty')
+    }
+
+    if (isEmpty(updatedReservation.lastName)) {
+      validationErrors.push('Last Name cannot be empty')
+    }
+
+    if (isEmpty(updatedReservation.email)) {
+      validationErrors.push('Email cannot be empty')
+    }
+
+    if (isEmpty(updatedReservation.phone)) {
+      validationErrors.push('Phone Number cannot be empty')
+    }
+
+    setErrorMessages([...validationErrors])
+    return validationErrors.length === 0
+  }
+
   const handleSave = (): void => {
     // Update the reservation in the parent component
-    onUpdateReservation(updatedReservation)
-    handleClose() // Close the dialog
+    const valid = validateFields()
+    if (valid) {
+      onUpdateReservation(updatedReservation)
+      handleClose() // Close the dialog
+    }
   }
 
   const handleDelete = (): void => {
@@ -120,7 +164,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 <InputLabel>Room Size</InputLabel>
                 <Select
                   aria-describedby="room-size-helper-text"
-                  defaultValue={updatedReservation.room.roomSize}
+                  value={updatedReservation.room.roomSize}
                   onChange={(event) => { handleRoomFieldChange('roomSize', event.target.value) }}
                 >
                     {Object.values(RoomSize).map((roomSize) => (
@@ -135,9 +179,11 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               </FormControl>
             </Grid>
             <Grid item xs={6}>
-              <TextField variant='standard'
+              <TextField variant='standard' style={{ width: '100%' }}
                 label="Room Quantity"
                 defaultValue={updatedReservation.room.roomQuantity}
+                type='number'
+                InputProps={{ inputProps: { min: 1, max: 5 } }}
                 onChange={(event) => { handleRoomFieldChange('roomQuantity', parseInt(event.target.value)) }}
               />
               <FormHelperText>Maximum: 5</FormHelperText>
@@ -150,6 +196,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               <TextField variant='standard'
                 label="First Name"
                 defaultValue={updatedReservation.firstName}
+                inputProps={{ maxLength: maxAllowedFirstNameSize }}
                 onChange={(event) => { handleTopLevelFieldChange('firstName', event.target.value) }}
                 FormHelperTextProps={{ style: { textAlign: 'right' } }}
                 helperText={`${updatedReservation.firstName.length} / ${maxAllowedFirstNameSize}`}
@@ -163,6 +210,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               <TextField variant='standard'
                 label="Last Name"
                 defaultValue={updatedReservation.lastName}
+                inputProps={{ maxLength: maxAllowedLastNameSize }}
                 onChange={(event) => { handleTopLevelFieldChange('lastName', event.target.value) }}
                 FormHelperTextProps={{ style: { textAlign: 'right' } }}
                 helperText={`${updatedReservation.lastName.length} / ${maxAllowedLastNameSize}`}
@@ -244,7 +292,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 <Select
                     multiple
                     renderValue={(selected) => selected.map(s => ExtrasDisplay[getExtrasFromString(s)]).join(', ')}
-                    defaultValue={updatedReservation.extras}
+                    value={updatedReservation.extras}
                     onChange={(event) => { handleTopLevelFieldChange('extras', event.target.value) }}
                   >
                     {Object.values(Extras).map((extras) => (
@@ -305,7 +353,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                         ))}
                       </Box>
                     )}
-                    defaultValue={updatedReservation.tags}
+                    value={updatedReservation.tags}
                     onChange={(event) => { handleTopLevelFieldChange('tags', event.target.value) }}
                   >
                     {Object.values(Tag).map((tag) => (
@@ -362,27 +410,45 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
           </Grid>
         </Box>
         <Box sx={{ my: 2 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={2}>
-              <Button variant="contained" onClick={handleSave}>
+          <Stack direction="row" spacing={2}>
+            <Button variant="contained" onClick={handleSave}>
                   Save
-              </Button>
-            </Grid>
-            <Grid item xs={2}>
-              <Button variant="contained" onClick={handleClose}>
+            </Button>
+            <Button variant="outlined" onClick={handleClose}>
                   Close
-              </Button>
+            </Button>
+            {(updatedReservation.id !== null &&
+              updatedReservation.id !== undefined &&
+              updatedReservation.id !== 0) &&
+              (
+                <Button variant="contained" color='error' onClick={handleDelete}>
+                  Delete
+                </Button>
+              )}
+          </Stack>
+        </Box>
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+            { errorMessages.length > 0 &&
+              (<List style={{ width: '100%', background: 'pink', fontWeight: 'bold' }}>
+                {
+                  errorMessages.map((e, index) => (
+                    <ListItem divider key={index} sx={{ display: 'list-item' }}>
+                      <Stack direction='row'>
+                        <ListItemIcon>
+                          <LabelImportant />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={e}
+                        />
+                      </Stack>
+                    </ListItem>
+                  ))}
+                </List>
+              )
+            }
             </Grid>
-              {(updatedReservation.id !== null &&
-                updatedReservation.id !== undefined &&
-                updatedReservation.id !== 0) &&
-                (
-                <Grid item xs={2}>
-                  <Button variant="contained" onClick={handleDelete}>
-                    Delete
-                  </Button>
-                </Grid>
-                )}
           </Grid>
         </Box>
       </Paper>
