@@ -114,7 +114,7 @@ const emptyReservation: Reservation = {
   },
   room: {
     roomSize: '',
-    roomQuantity: 0
+    roomQuantity: 1
   },
   firstName: '',
   lastName: '',

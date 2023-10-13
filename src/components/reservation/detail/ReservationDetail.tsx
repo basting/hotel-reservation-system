@@ -135,9 +135,11 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               </FormControl>
             </Grid>
             <Grid item xs={6}>
-              <TextField variant='standard'
+              <TextField variant='standard' style={{ width: '100%' }}
                 label="Room Quantity"
                 defaultValue={updatedReservation.room.roomQuantity}
+                type='number'
+                InputProps={{ inputProps: { min: 1, max: 5 } }}
                 onChange={(event) => { handleRoomFieldChange('roomQuantity', parseInt(event.target.value)) }}
               />
               <FormHelperText>Maximum: 5</FormHelperText>
@@ -150,6 +152,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               <TextField variant='standard'
                 label="First Name"
                 defaultValue={updatedReservation.firstName}
+                inputProps={{ maxLength: maxAllowedFirstNameSize }}
                 onChange={(event) => { handleTopLevelFieldChange('firstName', event.target.value) }}
                 FormHelperTextProps={{ style: { textAlign: 'right' } }}
                 helperText={`${updatedReservation.firstName.length} / ${maxAllowedFirstNameSize}`}
@@ -163,6 +166,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
               <TextField variant='standard'
                 label="Last Name"
                 defaultValue={updatedReservation.lastName}
+                inputProps={{ maxLength: maxAllowedLastNameSize }}
                 onChange={(event) => { handleTopLevelFieldChange('lastName', event.target.value) }}
                 FormHelperTextProps={{ style: { textAlign: 'right' } }}
                 helperText={`${updatedReservation.lastName.length} / ${maxAllowedLastNameSize}`}
