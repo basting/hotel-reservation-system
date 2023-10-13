@@ -2,6 +2,21 @@
 
 ENG will create a search and master/detail page with CRUD features.
 
+## Demo
+
+#### View and Edit flow
+https://github.com/basting/hotel-reservation-system/assets/10202139/d266a7f2-54a0-4648-a3c0-400044c1c990
+
+#### Create flow
+https://github.com/basting/hotel-reservation-system/assets/10202139/28641633-4fe9-4913-8d4f-1abfcb6991a1
+
+#### Delete flow
+https://github.com/basting/hotel-reservation-system/assets/10202139/e0cacc6b-845d-4c43-8a56-58cc246eaf1a
+
+#### Search flow
+https://github.com/basting/hotel-reservation-system/assets/10202139/c6dd935c-8b5b-45f2-8429-2e6ac6e8716e
+
+
 ## Requirements and current status
 
 - [x] Engineering MUST use Visual Studio Code with React V18 and its React Material for GUI
