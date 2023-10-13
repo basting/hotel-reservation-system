@@ -120,7 +120,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 <InputLabel>Room Size</InputLabel>
                 <Select
                   aria-describedby="room-size-helper-text"
-                  defaultValue={updatedReservation.room.roomSize}
+                  value={updatedReservation.room.roomSize}
                   onChange={(event) => { handleRoomFieldChange('roomSize', event.target.value) }}
                 >
                     {Object.values(RoomSize).map((roomSize) => (
@@ -248,7 +248,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 <Select
                     multiple
                     renderValue={(selected) => selected.map(s => ExtrasDisplay[getExtrasFromString(s)]).join(', ')}
-                    defaultValue={updatedReservation.extras}
+                    value={updatedReservation.extras}
                     onChange={(event) => { handleTopLevelFieldChange('extras', event.target.value) }}
                   >
                     {Object.values(Extras).map((extras) => (
@@ -309,7 +309,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                         ))}
                       </Box>
                     )}
-                    defaultValue={updatedReservation.tags}
+                    value={updatedReservation.tags}
                     onChange={(event) => { handleTopLevelFieldChange('tags', event.target.value) }}
                   >
                     {Object.values(Tag).map((tag) => (
