@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Chip, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, Switch, TextField } from '@mui/material'
+import { Box, Button, Checkbox, Chip, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, Stack, Switch, TextField } from '@mui/material'
 import type Reservation from '../../../types/Reservation'
 import dayjs, { type Dayjs } from 'dayjs'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -366,28 +366,22 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
           </Grid>
         </Box>
         <Box sx={{ my: 2 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={2}>
-              <Button variant="contained" onClick={handleSave}>
+          <Stack direction="row" spacing={2}>
+            <Button variant="contained" onClick={handleSave}>
                   Save
-              </Button>
-            </Grid>
-            <Grid item xs={2}>
-              <Button variant="contained" onClick={handleClose}>
+            </Button>
+            <Button variant="outlined" onClick={handleClose}>
                   Close
-              </Button>
-            </Grid>
-              {(updatedReservation.id !== null &&
-                updatedReservation.id !== undefined &&
-                updatedReservation.id !== 0) &&
-                (
-                <Grid item xs={2}>
-                  <Button variant="contained" onClick={handleDelete}>
-                    Delete
-                  </Button>
-                </Grid>
-                )}
-          </Grid>
+            </Button>
+            {(updatedReservation.id !== null &&
+              updatedReservation.id !== undefined &&
+              updatedReservation.id !== 0) &&
+              (
+                <Button variant="contained" color='error' onClick={handleDelete}>
+                  Delete
+                </Button>
+              )}
+          </Stack>
         </Box>
       </Paper>
       </LocalizationProvider>
