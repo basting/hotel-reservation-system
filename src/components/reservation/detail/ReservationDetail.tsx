@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Chip, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Paper, Radio, RadioGroup, Select, Stack, Switch, TextField } from '@mui/material'
+import { Box, Button, Checkbox, Chip, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, List, ListItem, ListItemIcon, ListItemText, MenuItem, Paper, Radio, RadioGroup, Select, Stack, Switch, TextField } from '@mui/material'
 import type Reservation from '../../../types/Reservation'
 import dayjs, { type Dayjs } from 'dayjs'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -8,6 +8,7 @@ import { Extras, ExtrasDisplay, getExtrasFromString } from '../../shared/constan
 import { Tag, TagDisplay, getTagFromString } from '../../shared/constants/Tag'
 import { PaymentMethod, PaymentMethodDisplay } from '../../shared/constants/PaymentMethod'
 import { useState } from 'react'
+import { LabelImportant } from '@mui/icons-material'
 
 interface ReservationDetailProps {
   reservation: Reservation
@@ -23,6 +24,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
   onDeleteReservation
 }: ReservationDetailProps) => {
   const [updatedReservation, setUpdatedReservation] = useState(reservation)
+  const [errorMessages, setErrorMessages] = useState<string[]>([])
 
   const maxAllowedFirstNameSize = 25
   const maxAllowedLastNameSize = 50
@@ -79,10 +81,52 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
     })
   }
 
+  const isEmpty = (val: string): boolean => {
+    return val === null || val === undefined || val === ''
+  }
+
+  const validateFields = (): boolean => {
+    const validationErrors: string[] = []
+
+    if (!dayjs(updatedReservation.stay.arrivalDate).isBefore(dayjs(updatedReservation.stay.departureDate))) {
+      validationErrors.push('Departure Date should be after Arrival Date')
+    }
+
+    if (isEmpty(updatedReservation.room.roomSize)) {
+      validationErrors.push('Room Size cannot be empty')
+    }
+
+    if (updatedReservation.room.roomQuantity < 1 || updatedReservation.room.roomQuantity > 5) {
+      validationErrors.push('Room Quantity should be between 1 and 5')
+    }
+
+    if (isEmpty(updatedReservation.firstName)) {
+      validationErrors.push('First Name cannot be empty')
+    }
+
+    if (isEmpty(updatedReservation.lastName)) {
+      validationErrors.push('Last Name cannot be empty')
+    }
+
+    if (isEmpty(updatedReservation.email)) {
+      validationErrors.push('Email cannot be empty')
+    }
+
+    if (isEmpty(updatedReservation.phone)) {
+      validationErrors.push('Phone Number cannot be empty')
+    }
+
+    setErrorMessages([...validationErrors])
+    return validationErrors.length === 0
+  }
+
   const handleSave = (): void => {
     // Update the reservation in the parent component
-    onUpdateReservation(updatedReservation)
-    handleClose() // Close the dialog
+    const valid = validateFields()
+    if (valid) {
+      onUpdateReservation(updatedReservation)
+      handleClose() // Close the dialog
+    }
   }
 
   const handleDelete = (): void => {
@@ -382,6 +426,30 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 </Button>
               )}
           </Stack>
+        </Box>
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+            { errorMessages.length > 0 &&
+              (<List style={{ width: '100%', background: 'pink', fontWeight: 'bold' }}>
+                {
+                  errorMessages.map((e, index) => (
+                    <ListItem divider key={index} sx={{ display: 'list-item' }}>
+                      <Stack direction='row'>
+                        <ListItemIcon>
+                          <LabelImportant />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={e}
+                        />
+                      </Stack>
+                    </ListItem>
+                  ))}
+                </List>
+              )
+            }
+            </Grid>
+          </Grid>
         </Box>
       </Paper>
       </LocalizationProvider>
