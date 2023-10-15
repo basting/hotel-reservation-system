@@ -2,8 +2,7 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches:
-      - feature/build-and-publish-to-ecr
+    branches: [ main ]
 
 jobs:
   docker_build_and_push:
