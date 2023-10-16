@@ -200,6 +200,7 @@ export const ReservationDetail: React.FC<ReservationDetailProps> = ({
                 onChange={(event) => { handleTopLevelFieldChange('firstName', event.target.value) }}
                 FormHelperTextProps={{ style: { textAlign: 'right' } }}
                 helperText={`${updatedReservation.firstName.length} / ${maxAllowedFirstNameSize}`}
+                data-testid='reservation-first-name'
               />
             </Grid>
           </Grid>
